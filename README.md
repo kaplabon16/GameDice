@@ -51,3 +51,4 @@ You win!
 Author
 GitHub: @kaplabon16
 
+# GameDice
