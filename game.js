@@ -63,7 +63,6 @@ async function main() {
   const userFirst = await determineFirstPlayer()
   console.log(userFirst ? 'You go first.' : 'Computer goes first.')
 
-  // User selects dice
   while (true) {
     console.log('Select your dice:')
     diceList.forEach((d, i) => console.log(`${i}: [${d.join(', ')}]`))
