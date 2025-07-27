@@ -49,6 +49,7 @@ You win!
 (HMAC matched)
 
 Author
+Kaushik Plabon
 GitHub: @kaplabon16
 
 # GameDice
