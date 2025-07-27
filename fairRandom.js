@@ -1,19 +1,22 @@
-const crypto = require ('crypto')
+const crypto = require('crypto')
 
-function generateCommitment (range) {
-    const key = crypto.randomBytes(32)
-    const number = crypto.randomInt(0, range-1)
-    const hmac = crypto.createHmac('sha3-256', key)
+function generateCommitment(range) {
+  const key = crypto.randomBytes(32)
+  const number = crypto.randomInt(0, range)
+  const hmac = crypto
+    .createHmac('sha3-256', key)
     .update(String(number))
     .digest('hex')
-    return {hmac, number, key}
+  return { hmac, number, key: key.toString('hex') }
 }
-function verifyHMAC (number, key, originalHMAC) {
-    const calculated = crypto.createHmac('sha3-256', key)
+
+function verifyHMAC(number, hexKey, originalHMAC) {
+  const key = Buffer.from(hexKey, 'hex')
+  const digest = crypto
+    .createHmac('sha3-256', key)
     .update(String(number))
     .digest('hex')
-    return calculated === originalHMAC
+  return digest === originalHMAC
 }
-module.exports = {
-    generateCommitment, verifyHMAC
-}
+
+module.exports = { generateCommitment, verifyHMAC }

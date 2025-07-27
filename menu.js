@@ -1,60 +1,30 @@
 const readline = require('readline')
+const { showHelpTable } = require('./helpTable')
 
-function showMenu(diceList, computerIndex, callback) {
-    console.log('\nAvailable Dice:')
-    diceList.forEach((dice, i) => {
-        if (i !== computerIndex) {
-            console.log(`Dice ${i}: [${dice.join(', ')}]`)
-        }
+function showMenu(diceList, forbiddenIndex, callback) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+  function ask() {
+    console.log('\nAvailable dice:')
+    diceList.forEach((d, i) => {
+      if (i !== forbiddenIndex) console.log(` ${i}: [${d.join(', ')}]`)
     })
-
-    console.log('\nOptions:')
-    console.log('Enter the dice number to choose')
-    console.log('? - Show probability table')
-    console.log('X - Exit the game\n')
-
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
+    console.log(' ?: show help table')
+    console.log(' X: exit')
+    rl.question('Your choice: ', ans => {
+      const c = ans.trim().toUpperCase()
+      if (c === 'X') {
+        rl.close()
+        return
+      }
+      if (c === '?') {
+        showHelpTable()
+        return ask()
+      }
+      rl.close()
+      callback(ans.trim())
     })
-
-    function askAgain() {
-        rl.question('Pick your dice: ', (answer) => {
-            const input = answer.trim().toLowerCase()
-
-            if (input === '?') {
-                printProbabilityTable(diceList, computerIndex)
-                askAgain() // Ask again after showing table
-            } else {
-                rl.close()
-                callback(answer)
-            }
-        })
-    }
-
-    askAgain()
-}
-
-function printProbabilityTable(diceList, computerIndex) {
-    const computerDice = diceList[computerIndex]
-    console.log('\nProbability Table (Chance to Beat Computer Dice):')
-    diceList.forEach((dice, i) => {
-        if (i !== computerIndex) {
-            const winRate = calculateWinRate(dice, computerDice)
-            console.log(`Your Dice ${i} vs Computer Dice ${computerIndex} → Win Chance: ${winRate}%`)
-        }
-    })
-}
-
-function calculateWinRate(userDice, computerDice) {
-    let wins = 0
-    const total = userDice.length * computerDice.length
-    for (let u of userDice) {
-        for (let c of computerDice) {
-            if (u > c) wins++
-        }
-    }
-    return ((wins / total) * 100).toFixed(2)
+  }
+  ask()
 }
 
 module.exports = { showMenu }
